@@ -42,7 +42,7 @@ public class Settings {
 	//additions by Stacia Fry for UCONN REU 2018
 	private final static String REMOVE_ALL = "removeallgraphs";
 	//additions by Stacia Fry for UCONN REU 2018
-	private final static String COMPARE_FILES = "comparefiles";
+	//private final static String COMPARE_FILES = "comparefiles";
 	
 	private final static String VERIFY_ALL = "vall";
 	private final static String VERIFY_CURRENTLY_BLOCKED = "vcb";
@@ -115,8 +115,8 @@ public class Settings {
 	private String removeNode;
 	
 	//additions by Stacia Fry for UCONN REU 2018
-	/** Where should graph files be stored? */
-	private String removeAllDirectory;
+	/** How many nodes to remove? */
+	private String numToRemove;
 
 	//additions by Stacia Fry for UCONN REU 2018
 	/**What is the output file directory?
@@ -217,9 +217,9 @@ public class Settings {
 		//additions by Stacia Fry for UCONN REU 2018
 		this.removeNode = line.getOptionValue(REMOVE);
 		//additions by Stacia Fry for UCONN REU 2018
-		this.removeAllDirectory = line.getOptionValue(REMOVE_ALL);
+		this.numToRemove = line.getOptionValue(REMOVE_ALL);
 		//additions by Stacia Fry for UCONN REU 2018
-		this.compareFiles = line.hasOption(COMPARE_FILES); 
+		//this.compareFiles = line.hasOption(COMPARE_FILES); 
 			//String[] fileOptions = line.getOptionValues(COMPARE_FILES);
 			//this.file1 = fileOptions[0];
 			//this.file2 = fileOptions[1];
@@ -347,12 +347,12 @@ public class Settings {
 		
 		//additions by Stacia Fry for UCONN REU 2018
 		option = new Option(REMOVE_ALL, true,
-				"Generate graphs for all remove options");
-		option.setArgName("DIR");
+				"Generate verification results for all remove options. /n NUM = how many nodes to remove.");
+		option.setArgName("NUM");
 		options.addOption(option);
 		
 		//additions by Stacia Fry for UCONN REU 2018
-		options.addOption(COMPARE_FILES, false, "compare two output records");
+		//options.addOption(COMPARE_FILES, false, "compare two output records");
 		//option.setArgs(2);
 		//option.setArgName("FILE 1 FILE 2");
 		//options.addOption(option);
@@ -607,7 +607,7 @@ public class Settings {
 	 * @return true if remove is requested
 	 */
 	public boolean shouldRemoveAll() {
-		return (this.removeAllDirectory != null);
+		return (this.numToRemove != null);
 	}
 	
 	//additions by Stacia Fry for UCONN REU 2018
@@ -643,7 +643,7 @@ public class Settings {
 	 * @return the path to a directory where graph files should be stored
 	 */
 	public String getRemoveAll() {
-		return this.removeAllDirectory;
+		return this.numToRemove;
 	}
 	
 	//additions by Stacia Fry for UCONN REU 2018
@@ -766,7 +766,7 @@ public class Settings {
 		//additions by Stacia Fry for UCONN REU 2018
 		result += "\nNode to be removed: " + this.removeNode;
 		//additions by Stacia Fry for UCONN REU 2018
-		result += "\nGraphs directory: " + this.removeAllDirectory;
+		result += "\nGraphs directory: " + this.numToRemove;
 		result += "\nSerialized ETGs file: " + this.serializedETGsFile;
 		result += "\nVerify currently blocked: " + this.verifyCurrentlyBlocked;
 		result += "\nVerify always blocked: " + this.verifyAlwaysBlocked;

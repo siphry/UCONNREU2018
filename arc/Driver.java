@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 import edu.wisc.cs.arc.graphs.*;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.math3.*;
 import org.batfish.representation.Ip;
 import org.batfish.representation.VendorConfiguration;
 import org.batfish.representation.cisco.CiscoVendorConfiguration;
@@ -90,7 +91,7 @@ public class Driver {
 		//additions by Stacia Fry for UCONN REU 2018
 		//remove node from ETG
 		if(settings.shouldRemoveAll()) {
-			removeNodeGraphs(settings);
+			removeNodeGraphs(settings, settings.getRemoveAll());
 		}
 
 		if(!settings.shouldRemoveAll())
@@ -881,11 +882,11 @@ public class Driver {
 	//additions by Stacia Fry for UCONN REU 2018
 	//generates graphs for all remove node options
 	/**
-	 * Generates graphs for all node removal options
+	 * Generates graphs and specified verification tests for all node removal options
 	 * @param settings
 	 * @param baseEtg
 	 */
-	private static void removeNodeGraphs(Settings settings)
+	private static void removeNodeGraphs(Settings settings, int n)
 	{
 		Logger logger = settings.getLogger();
 		generateETGS(settings);
@@ -895,15 +896,16 @@ public class Driver {
         	// Create ETGs for every possible flow
         	flowEtgs = generateFlowETGs(settings, baseEtg, policyGroups, devices);
         }
-		generateGraphs(settings, baseEtg, instanceEtg, deviceEtg, flowEtgs, settings.getRemoveAll() + "base");
+		//generateGraphs(settings, baseEtg, instanceEtg, deviceEtg, flowEtgs, settings.getRemoveAll() + "base");
 		runVerificationTasks(settings, flowEtgs, deviceEtg, settings.getVerifyDirectory() + "base");
+		
 		for(int i = 0; i < devices.size(); i++) {
 			
 			devices.clear();
 			parseConfigs(settings);
 			// List devices
 			Device temp = devices.get(i);
-			System.out.println(temp.getName() + " removed from device list.");
+			//System.out.println(temp.getName() + " removed from device list.");
 			devices.remove(i);
 			generateETGS(settings);
 			// Determine policy groups
@@ -913,11 +915,9 @@ public class Driver {
 				// Create ETGs for every possible flow
 				flowEtgs = generateFlowETGs(settings, baseEtg, policyGroups, devices);
 			}
-			generateGraphs(settings, baseEtg, instanceEtg, deviceEtg, flowEtgs, settings.getRemoveAll() + temp.getName() + "removed-graphs");
-			System.out.println("GRAPHS GENERATED");
-			//String testDirectory = s;
-			runVerificationTasks(settings, flowEtgs, deviceEtg, settings.getVerifyDirectory() + temp.getName() + "removed");
-			devices.add(i, temp);
+			//generateGraphs(settings, baseEtg, instanceEtg, deviceEtg, flowEtgs, settings.getRemoveAll() + temp.getName() + "removed-graphs");
+			//System.out.println("GRAPHS GENERATED");
+			runVerificationTasks(settings, flowEtgs, deviceEtg, settings.getVerifyDirectory() + temp.getName() + "-" + n + "-nodes-removed");
 		}
 	}
 

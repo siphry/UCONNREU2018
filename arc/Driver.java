@@ -878,6 +878,42 @@ public class Driver {
 //		}
 	//	writer.close();
 	//}	
+
+	//additions by Stacia Fry for UCONN REU 2018
+	//generates graphs for all remove node options
+	/**
+	 * Generates a list of lists of all int combinations of given input
+	 * @param settings
+	 * @param baseEtg
+	*/
+	public List<List<Integer>> modifyQuery(List<Integer> list, int count) {
+        
+        List<List<Integer>> results = new ArrayList<List<Integer>>();
+        
+        ArrayList<Integer> workingList = new ArrayList<Integer>();
+        populateResults(results, workingList, list, 0, count);
+        
+        return results;
+    }
+
+    private void populateResults(
+            List<List<Integer>> results,
+            ArrayList<Integer> workingList,
+            List<Integer> nList,
+            int index,
+            int numLeft) {
+
+        if (numLeft > 0) {
+            for (int i = index; i < nList.size() - numLeft + 1; ++i)
+            {
+                workingList.add(nList.get(i));
+                populateResults(results, workingList, nList, i + 1, numLeft - 1);
+                workingList.remove(workingList.size() - 1);
+            }
+        } else {
+            results.add(new ArrayList<Integer>(workingList));
+        }
+    }
 	
 	//additions by Stacia Fry for UCONN REU 2018
 	//generates graphs for all remove node options

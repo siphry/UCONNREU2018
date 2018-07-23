@@ -22,7 +22,6 @@ import java.util.concurrent.Future;
 import edu.wisc.cs.arc.graphs.*;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.math3.*;
 import org.batfish.representation.Ip;
 import org.batfish.representation.VendorConfiguration;
 import org.batfish.representation.cisco.CiscoVendorConfiguration;
@@ -85,13 +84,14 @@ public class Driver {
 		//additions by Stacia Fry for UCONN REU 2018
 		//remove node from ETG
 		if(settings.shouldRemoveNode()) {
-			removeNodeETG(settings);
+			removeNodeDevice(settings);
 		}
 		
 		//additions by Stacia Fry for UCONN REU 2018
 		//remove node from ETG
 		if(settings.shouldRemoveAll()) {
-			removeNodeGraphs(settings, settings.getRemoveAll());
+			int inputNum = Integer.parseInt(settings.getRemoveAll());
+			removeAllNodeOptions(settings, inputNum);
 		}
 
 		if(!settings.shouldRemoveAll())
@@ -789,7 +789,7 @@ public class Driver {
 	 * Removes the specified node
 	 * @param settings
 	 */
-	private static void removeNodeETG(Settings settings)
+	private static void removeNodeDevice(Settings settings)
 	{
 		int inputNum = Integer.parseInt(settings.getRemoveNode());
 		devices.remove(inputNum);
@@ -883,10 +883,11 @@ public class Driver {
 	//generates graphs for all remove node options
 	/**
 	 * Generates a list of lists of all int combinations of given input
-	 * @param settings
-	 * @param baseEtg
+	 * @param List<Integer>
+	 * @param int count
 	*/
-	public List<List<Integer>> modifyQuery(List<Integer> list, int count) {
+	//method provided by Ryan Estes UCONN REU 2018
+	public static List<List<Integer>> modifyQuery(List<Integer> list, int count) {
         
         List<List<Integer>> results = new ArrayList<List<Integer>>();
         
@@ -895,8 +896,9 @@ public class Driver {
         
         return results;
     }
-
-    private void populateResults(
+	
+	//method provided by Ryan Estes UCONN REU 2018
+    private static void populateResults(
             List<List<Integer>> results,
             ArrayList<Integer> workingList,
             List<Integer> nList,
@@ -914,6 +916,20 @@ public class Driver {
             results.add(new ArrayList<Integer>(workingList));
         }
     }
+    
+    //additions by Stacia Fry for UCONN REU 2018
+	/**
+	 * Generates list of integers up to the size of the device list
+	 * @param size of device list
+	 * @return List<Integer>
+	 */
+	private static List<Integer> generateIntList(int size){
+		List<Integer> numList = new ArrayList<Integer>();
+		for(int i = 0; i < size; i++) {
+			numList.add(i);
+		}
+		return numList;
+	}
 	
 	//additions by Stacia Fry for UCONN REU 2018
 	//generates graphs for all remove node options
@@ -922,8 +938,10 @@ public class Driver {
 	 * @param settings
 	 * @param baseEtg
 	 */
-	private static void removeNodeGraphs(Settings settings, int n)
+	private static void removeAllNodeOptions(Settings settings, int n)
 	{
+		List<Integer> numList = generateIntList(devices.size()); 
+		List<List<Integer>> comboList = modifyQuery(numList, n);
 		Logger logger = settings.getLogger();
 		generateETGS(settings);
 		Set<PolicyGroup> policyGroups = determinePolicyGroups(vendorConfigs,
@@ -934,15 +952,17 @@ public class Driver {
         }
 		//generateGraphs(settings, baseEtg, instanceEtg, deviceEtg, flowEtgs, settings.getRemoveAll() + "base");
 		runVerificationTasks(settings, flowEtgs, deviceEtg, settings.getVerifyDirectory() + "base");
-		
-		for(int i = 0; i < devices.size(); i++) {
-			
+		for(List<Integer> list : comboList) {
 			devices.clear();
 			parseConfigs(settings);
-			// List devices
-			Device temp = devices.get(i);
-			//System.out.println(temp.getName() + " removed from device list.");
-			devices.remove(i);
+			int removeCount = 0;
+			String numsRemoved = "";
+			for(int num : list) {
+				System.out.println(num);
+				devices.remove(num - removeCount);
+				removeCount++;
+				numsRemoved += Integer.toString(num);
+			}
 			generateETGS(settings);
 			// Determine policy groups
 			policyGroups = determinePolicyGroups(vendorConfigs,
@@ -951,10 +971,32 @@ public class Driver {
 				// Create ETGs for every possible flow
 				flowEtgs = generateFlowETGs(settings, baseEtg, policyGroups, devices);
 			}
-			//generateGraphs(settings, baseEtg, instanceEtg, deviceEtg, flowEtgs, settings.getRemoveAll() + temp.getName() + "removed-graphs");
+			generateGraphs(settings, baseEtg, instanceEtg, deviceEtg, flowEtgs, settings.getGraphsDirectory() + numsRemoved + "removed-graphs");
 			//System.out.println("GRAPHS GENERATED");
-			runVerificationTasks(settings, flowEtgs, deviceEtg, settings.getVerifyDirectory() + temp.getName() + "-" + n + "-nodes-removed");
+			runVerificationTasks(settings, flowEtgs, deviceEtg, settings.getVerifyDirectory() + numsRemoved);
+			for(Device device : devices) {
+				System.out.println(device);
+			}
+			
 		}
+			
+//			devices.clear();
+//			parseConfigs(settings);
+//			Device temp = devices.get(i);
+//			//System.out.println(temp.getName() + " removed from device list.");
+//			devices.remove(i);
+//			generateETGS(settings);
+//			// Determine policy groups
+//			policyGroups = determinePolicyGroups(vendorConfigs,
+//							settings);
+//			if (settings.shouldGenerateFlowETGs()) {
+//				// Create ETGs for every possible flow
+//				flowEtgs = generateFlowETGs(settings, baseEtg, policyGroups, devices);
+//			}
+//			//generateGraphs(settings, baseEtg, instanceEtg, deviceEtg, flowEtgs, settings.getRemoveAll() + temp.getName() + "removed-graphs");
+//			//System.out.println("GRAPHS GENERATED");
+//			runVerificationTasks(settings, flowEtgs, deviceEtg, settings.getVerifyDirectory() + temp.getName() + "-" + n + "-nodes-removed");
+		
 	}
 
 	/**

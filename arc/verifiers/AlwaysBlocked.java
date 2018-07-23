@@ -42,13 +42,13 @@ public class AlwaysBlocked extends Verifier {
 		if (null == etg) {
 			throw new VerifierException("No ETG for flow "+flow);
 		}
-		//settings.getLogger().debug("Verify always blocked for " 
-		//		+ flow.toString());
-		//settings.getLogger().debug("\tSource vertex=" 
-		//		+ etg.getFlowSourceVertex(flow.getSource())
-		//		+ " Present=" + (etg.getVertex(etg.getFlowSourceVertex(
-		//				flow.getSource()).getName()) != null));
-		//settings.getLogger().debug("\tETG flow=" + etg.getFlow());
+		settings.getLogger().debug("Verify always blocked for " 
+				+ flow.toString());
+		settings.getLogger().debug("\tSource vertex=" 
+				+ etg.getFlowSourceVertex(flow.getSource())
+				+ " Present=" + (etg.getVertex(etg.getFlowSourceVertex(
+						flow.getSource()).getName()) != null));
+		settings.getLogger().debug("\tETG flow=" + etg.getFlow());
 		
 		Iterator<Vertex> iterator = etg.getVerticesIterator();
 		while (iterator.hasNext()) {

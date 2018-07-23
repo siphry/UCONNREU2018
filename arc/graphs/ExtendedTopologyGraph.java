@@ -307,7 +307,7 @@ public abstract class ExtendedTopologyGraph<V extends Vertex> implements
    * @param destination destination vertex
    * @return the edge that was removed
    */
-  public DirectedEdge<V> removeEdge(V source, V destination) {
+  protected DirectedEdge<V> removeEdge(V source, V destination) {
     return this.graph.removeEdge(source, destination);
   }
   

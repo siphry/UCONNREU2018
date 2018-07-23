@@ -40,7 +40,7 @@ public class Settings {
 	//additions by Stacia Fry for UCONN REU 2018
 	private final static String REMOVE = "removenode";
 	//additions by Stacia Fry for UCONN REU 2018
-	private final static String REMOVE_ALL = "removeallgraphs";
+	private final static String REMOVE_ALL = "removealloptions";
 	//additions by Stacia Fry for UCONN REU 2018
 	//private final static String COMPARE_FILES = "comparefiles";
 	
@@ -119,8 +119,7 @@ public class Settings {
 	private String numToRemove;
 
 	//additions by Stacia Fry for UCONN REU 2018
-	/**What is the output file directory?
-	 * What should the output file be called? */
+	/**What is the output file directory? */
 	private String verifyDirectory;
 		
 	/** Should the currently blocked verifier be run? */
@@ -144,13 +143,13 @@ public class Settings {
 	/** Should per-flow timing information be output during verification? */
 	private boolean perflowVerifcationTimes;
 	
-	//additions by Stacia Fry for UCONN REU 2018
-	/**First file to compare */
-	private String file1;
-	
-	//additions by Stacia Fry for UCONN REU 2018
-	/**Second file to compare */
-	private String file2;	
+//	//additions by Stacia Fry for UCONN REU 2018
+//	/**First file to compare */
+//	private String file1;
+//	
+//	//additions by Stacia Fry for UCONN REU 2018
+//	/**Second file to compare */
+//	private String file2;	
 	
 	/** Logger */
 	private Logger logger;
@@ -248,8 +247,6 @@ public class Settings {
 						line.getOptionValue(VERIFY_ALWAYS_REACHABLE, "-1"));
 				if(shouldVerifyAlwaysReachable()) {
 					String[] splitOption = line.getOptionValues(VERIFY_ALWAYS_REACHABLE);
-					//String[] parts = splitOption.split(",");
-					//System.out.println("SPLIT OPTION: " + splitOption[1]);
 					this.verifyDirectory = splitOption[1];
 				}
 			} catch(NumberFormatException e) {
@@ -347,7 +344,7 @@ public class Settings {
 		
 		//additions by Stacia Fry for UCONN REU 2018
 		option = new Option(REMOVE_ALL, true,
-				"Generate verification results for all remove options. /n NUM = how many nodes to remove.");
+				"Generate verification results for all remove options. NUM = how many nodes to remove.");
 		option.setArgName("NUM");
 		options.addOption(option);
 		
@@ -610,37 +607,37 @@ public class Settings {
 		return (this.numToRemove != null);
 	}
 	
-	//additions by Stacia Fry for UCONN REU 2018
-	/**
-	 * Determine if removal of node has been requested
-	 * @return true if remove is requested
-	 */
-	public boolean shouldCompareFiles() {
-		return this.compareFiles;
-	}
-	
-	//additions by Stacia Fry for UCONN REU 2018
-	/**
-	 * Determine first file to compare
-	 * @return the directory of the file
-	 */
-	public String getFile1() {
-		return this.file1;
-	}	
-	
-	//additions by Stacia Fry for UCONN REU 2018
-	/**
-	 * Determine second file to compare
-	 * @return the directory of the file
-	 */
-	public String getFile2() {
-		return this.file2;
-	}		
+//	//additions by Stacia Fry for UCONN REU 2018
+//	/**
+//	 * Determine if removal of node has been requested
+//	 * @return true if remove is requested
+//	 */
+//	public boolean shouldCompareFiles() {
+//		return this.compareFiles;
+//	}
+//	
+//	//additions by Stacia Fry for UCONN REU 2018
+//	/**
+//	 * Determine first file to compare
+//	 * @return the directory of the file
+//	 */
+//	public String getFile1() {
+//		return this.file1;
+//	}	
+//	
+//	//additions by Stacia Fry for UCONN REU 2018
+//	/**
+//	 * Determine second file to compare
+//	 * @return the directory of the file
+//	 */
+//	public String getFile2() {
+//		return this.file2;
+//	}		
 		
 	//additions by Stacia Fry for UCONN REU 2018
 	/**
-	 * Determine where graph files should be stored.
-	 * @return the path to a directory where graph files should be stored
+	 * Determine the number of nodes to be removed from device list.
+	 * @return number of nodes to remove
 	 */
 	public String getRemoveAll() {
 		return this.numToRemove;
